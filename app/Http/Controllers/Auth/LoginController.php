@@ -65,24 +65,30 @@ class LoginController extends Controller
 
 
     public function doLogin(Request $request)
-    {
-
+    {       
+        // validate input making sure email and password are not empty
+        $request->validate([
+          'email' => 'required|email', // email must be valid
+          'password' => 'required'     // password is required
+        ]);
+        
         // create our user data for the authentication
         $userdata = array(
           'email' => $request->input('email') ,
           'password' => $request->input('password')
         );
-
+        
         // attempt to do the login
         if (Auth::attempt($userdata))
-        {
+        {    
+            return redirect()->route('home')->with('Success', 'You are now logged in.');
             // echo 'logged in';
                 // validation successful
                 // do whatever you want on success
         }
         else
         {
-            echo 'Failed';
+            return redirect()->back()->with('error', 'Invalid email or password.')
             // validation not successful, send back to form
             // return Redirect::to('');
 
